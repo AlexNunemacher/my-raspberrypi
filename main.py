@@ -2,6 +2,7 @@ import time
 import requests
 import numpy as np
 
+
 IP = "192.168.1.2"
 STREAM_URL = f"http://{IP}:5800"
 
