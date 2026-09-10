@@ -1,7 +1,15 @@
+import cv2
 import time
 import requests
 import numpy as np
 
+try:
+    from pycoral.adapters import common, detect
+    from pycoral.utils.edgetpu import make_interpreter
+    from pycoral.utils.dataset import read_label_file
+    HAS_PYCORAL = True
+except ModuleNotFoundError:
+    HAS_PYCORAL = False
 
 IP = "192.168.1.2"
 STREAM_URL = f"http://{IP}:5800"
@@ -31,6 +39,11 @@ def send_telegram_alert(image, message):
         pass
 
 def main():
+    if not HAS_PYCORAL:
+        print("Error: 'pycoral' module is not installed in this Python environment.")
+        print("Please run this script on the Raspberry Pi where Coral Edge TPU drivers are installed.")
+        return
+
     interpreter = make_interpreter(MODEL_PATH)
     interpreter.allocate_tensors()
     labels = read_label_file(LABELS_PATH)
@@ -38,6 +51,7 @@ def main():
     cap = cv2.VideoCapture(STREAM_URL)
 
     if not cap.isOpened():
+        print(f"Error: Could not connect to video stream at {STREAM_URL}")
         return
 
     last_alert_time = 0
