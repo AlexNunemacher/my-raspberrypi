@@ -1,6 +1,7 @@
 import time
 import requests
 import numpy as np
+import cv2
 
 try:
     from pycoral.adapters import common, detect
@@ -16,15 +17,15 @@ STREAM_URL = f"http://{IP}:5800"
 MODEL_PATH = "ssd_mobilenet_v2_coco_quant_postprocess_edgetpu.tflite"
 LABELS_PATH = "coco_labels.txt"
 
-TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
-TELEGRAM_CHAT_ID = "YOUR_TELEGRAM_CHAT_ID"
+TELEGRAM_BOT_TOKEN = "TELEGRAM_BOT_TOKEN"
+TELEGRAM_CHAT_ID = "TELEGRAM_CHAT_ID"
 
 TARGET_OBJECTS = ["person"]
 CONFIDENCE_THRESHOLD = 0.50
 ALERT_COOLDOWN = 15
 
 def send_telegram_alert(image, message):
-    if TELEGRAM_BOT_TOKEN == "YOUR_TELEGRAM_BOT_TOKEN":
+    if TELEGRAM_BOT_TOKEN == "TELEGRAM_BOT_TOKEN":
         return
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
@@ -40,7 +41,7 @@ def send_telegram_alert(image, message):
 def main():
     if not HAS_PYCORAL:
         print("Error: 'pycoral' module is not installed in this Python environment.")
-        print("Please run this script on the Raspberry Pi where Coral Edge TPU drivers are installed.")
+        print("Run this on the Raspberry Pi where Coral Edge TPU drivers are installed.")
         return
 
     interpreter = make_interpreter(MODEL_PATH)
